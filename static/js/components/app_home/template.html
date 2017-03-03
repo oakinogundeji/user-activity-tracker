@@ -1,3 +1,40 @@
-<section>
-    <h1>This is the Home Section.............!!!</h1>
+<!--from /components/app_home/template.html-->
+<section class="container">
+    <div class="jumbotron hero-img" :style="{backgroundImage: 'url(' + imgURL + ')'}"></div>
+    <div class="row">
+        <section class="col-md-6">
+            <h2 class="text-center">Services</h2>
+            <p>
+                Lorem ipsum dolor sit amet, suspendisse elit nonummy adipiscing
+                cras quam tristique, vel sit mollis et et porta, fermentum
+                tristique nec ligula. Sodales at amet morbi a a tempus, unde
+                pharetra adipiscing sit arcu tortor sollicitudin.
+                Nulla mi id fusce justo, magna tempor diam non ac elit pede,
+                mollis vel volutpat, ac enim at blandit dui lacus. Sed amet
+                donec wisi, sit cras quis potenti in nec, sociosqu pellentesque
+                a. Mauris maecenas sapien pede in, mauris tellus aenean
+                suspendisse at, libero vitae sit tempor praesent, mauris eu a.
+            </p>
+            <button type="button" class="btn btn-primary btn-default pull-right">
+                <router-link :to="{name: 'services'}">Learn More...</router-link>
+            </button>
+        </section>
+        <section class="col-md-6">
+            <h2 class="text-center">About Us</h2>
+            <p>
+                Lorem ipsum dolor sit amet, suspendisse elit nonummy adipiscing
+                cras quam tristique, vel sit mollis et et porta, fermentum
+                tristique nec ligula. Sodales at amet morbi a a tempus, unde
+                pharetra adipiscing sit arcu tortor sollicitudin.
+                Nulla mi id fusce justo, magna tempor diam non ac elit pede,
+                mollis vel volutpat, ac enim at blandit dui lacus. Sed amet
+                donec wisi, sit cras quis potenti in nec, sociosqu pellentesque
+                a. Mauris maecenas sapien pede in, mauris tellus aenean
+                suspendisse at, libero vitae sit tempor praesent, mauris eu a.
+            </p>
+            <button type="button" class="btn btn-primary btn-default pull-right">
+                <router-link :to="{name: 'about'}">Learn More...</router-link>
+            </button>
+        </section>
+    </div>
 </section>

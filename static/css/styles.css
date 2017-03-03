@@ -1,0 +1,23 @@
+footer {
+	margin-top: 50px;
+  	padding: 1rem;
+  	background-color: #efefef;
+}
+
+.hero-img {
+	color: white;
+	min-height: 800px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	position: relative;
+}
+
+button a {
+	color: white;
+	font-weight: bold;
+	text-decoration: none;
+}
