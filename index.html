@@ -16,7 +16,92 @@
     <!--jQuery 2.x-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <!--Bootstrap JS-->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>    
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!--custom elem detction script-->
+    <script>
+        $(function () {
+            'use strict';
+            // below section detects all the trigger elements on the page
+            /*console.log('jQuery existing...');
+            function getTriggers() {
+                const $triggers = $('.trigger');
+                console.log('$triggers...');
+                return console.log($triggers);
+            }
+
+            function getTriggersH2() {
+                const
+                    $triggers = $('.trigger'),
+                    $H2 = $triggers.children('h2');
+                console.log('$H2...');
+                console.log($H2);
+                $H2.each(function (idx) {
+                    const
+                        elem = $(this),
+                        txt = elem.text();
+                    return console.log(`Elem: ${elem}, text: ${txt}`);
+                });
+            }
+
+            if ("onhashchange" in window) {
+                console.log("The browser supports the hashchange event!");
+                window.addEventListener("hashchange", getTriggersH2, false);
+            }
+            getTriggersH2();*/
+            // below section attaches handlers to all elems in the '.trigger' class
+            function detectMouseEnter() {
+                const $triggers = $('.trigger');
+                $triggers.on('mouseenter', function () {
+                    const
+                        elem = $(this),
+                        $H2 = elem.children('h2');
+                    $H2.each(function (idx) {
+                        const
+                            elem = $(this),
+                            txt = elem.text();
+                        return console.log(`Entering - Elem: ${elem}, text: ${txt}`);
+                    });
+                });
+                $triggers.on('mouseleave', function () {
+                    const
+                        elem = $(this),
+                        $H2 = elem.children('h2');
+                    $H2.each(function (idx) {
+                        const
+                            elem = $(this),
+                            txt = elem.text();
+                        return console.log(`Leaving - Elem: ${elem}, text: ${txt}`);
+                    });
+                });
+            }
+
+            if ("onhashchange" in window) {
+                console.log("The browser supports the hashchange event!");
+                window.addEventListener("hashchange", detectMouseEnter, false);
+            }
+            detectMouseEnter()
+        });
+        /*function getTriggers() {
+            const $triggers = document.getElementsByClassName('trigger');
+            console.log('$triggers...');
+            return console.log($triggers);
+        }
+
+        function getTriggersH2() {
+            const $triggers = document.getElementsByClassName('trigger');
+            return Array.from($triggers).forEach(element => {
+                const H_2 = element.getElementByClassName('h2');
+                return console.log(`element ${element}: h2 ${H_2}`);
+            });
+        }
+
+        window.addEventListener("load", getTriggersH2);
+
+        if ("onhashchange" in window) {
+            console.log("The browser supports the hashchange event!");
+            window.addEventListener("hashchange", getTriggers, false);
+        }*/
+    </script> 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
