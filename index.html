@@ -17,7 +17,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <!--Bootstrap JS-->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <!--custom elem detction script-->
+    <!--custom elem detection script-->
     <script>
         $(function () {
             'use strict';
@@ -38,8 +38,8 @@
                 $H2.each(function (idx) {
                     const
                         elem = $(this),
-                        txt = elem.text();
-                    return console.log(`Elem: ${elem}, text: ${txt}`);
+                        sectionHeading = elem.text();
+                    return console.log(`Elem: ${elem}, text: ${sectionHeading}`);
                 });
             }
 
@@ -49,28 +49,59 @@
             }
             getTriggersH2();*/
             // below section attaches handlers to all elems in the '.trigger' class
+
+            if(window.localStorage) {
+                console.log('local storage supported!!!');
+            }
+
             function detectMouseEnter() {
                 const $triggers = $('.trigger');
+                let
+                    time_lapse,
+                    start,
+                    end,
+                    location;
                 $triggers.on('mouseenter', function () {
                     const
                         elem = $(this),
                         $H2 = elem.children('h2');
+                    start = Date.now();
+                    location = window.location.href;
                     $H2.each(function (idx) {
                         const
                             elem = $(this),
-                            txt = elem.text();
-                        return console.log(`Entering - Elem: ${elem}, text: ${txt}`);
+                            sectionHeading = elem.text();
+                        return console.log(`Entering - Section: ${sectionHeading} @ Location: ${location}`);
                     });
                 });
                 $triggers.on('mouseleave', function () {
                     const
                         elem = $(this),
                         $H2 = elem.children('h2');
+                    end = Date.now();
                     $H2.each(function (idx) {
                         const
                             elem = $(this),
-                            txt = elem.text();
-                        return console.log(`Leaving - Elem: ${elem}, text: ${txt}`);
+                            sectionHeading = elem.text();
+                        time_lapse = end - start;
+                        console.log(`Leaving - Section: ${sectionHeading} @ Location: ${location}, you spent: ${time_lapse} millisecs`);
+
+                        console.log(`trying to retrieve data: ${localStorage.getItem(sectionHeading)}`);
+                        const previousData = localStorage.getItem(sectionHeading);
+                        if(time_lapse > 4999) {
+                            if(previousData) {
+                                const
+                                    numericPreviousData = Number(previousData),
+                                    newData = numericPreviousData + time_lapse;
+                                console.log(`numericPreviousData: ${numericPreviousData}`);
+                                console.log(`newData: ${newData}`);
+                                localStorage.setItem(sectionHeading, newData);
+                                return console.log(`successfully updated data: ${localStorage.getItem(sectionHeading)}`);
+                            } else {
+                                localStorage.setItem(sectionHeading, time_lapse);
+                                return console.log(`successfully saved fresh data: ${localStorage.getItem(sectionHeading)}`);
+                            }
+                        }
                     });
                 });
             }
@@ -101,7 +132,7 @@
             console.log("The browser supports the hashchange event!");
             window.addEventListener("hashchange", getTriggers, false);
         }*/
-    </script> 
+    </script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
