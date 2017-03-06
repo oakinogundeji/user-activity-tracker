@@ -17,42 +17,16 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <!--Bootstrap JS-->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!--Lodash-->
+    <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
     <!--custom elem detection script-->
     <script>
         $(function () {
             'use strict';
-            // below section detects all the trigger elements on the page
-            /*console.log('jQuery existing...');
-            function getTriggers() {
-                const $triggers = $('.trigger');
-                console.log('$triggers...');
-                return console.log($triggers);
-            }
 
-            function getTriggersH2() {
-                const
-                    $triggers = $('.trigger'),
-                    $H2 = $triggers.children('h2');
-                console.log('$H2...');
-                console.log($H2);
-                $H2.each(function (idx) {
-                    const
-                        elem = $(this),
-                        sectionHeading = elem.text();
-                    return console.log(`Elem: ${elem}, text: ${sectionHeading}`);
-                });
-            }
-
-            if ("onhashchange" in window) {
-                console.log("The browser supports the hashchange event!");
-                window.addEventListener("hashchange", getTriggersH2, false);
-            }
-            getTriggersH2();*/
-            // below section attaches handlers to all elems in the '.trigger' class
-
-            if(window.localStorage) {
-                console.log('local storage supported!!!');
-            }
+            let
+                percaysoLocations = [],
+                percaysoMetaData = {};
 
             function detectMouseEnter() {
                 const $triggers = $('.trigger');
@@ -71,6 +45,7 @@
                         const
                             elem = $(this),
                             sectionHeading = elem.text();
+                        percaysoLocations.push(sectionHeading);
                         return console.log(`Entering - Section: ${sectionHeading} @ Location: ${location}`);
                     });
                 });
@@ -106,32 +81,26 @@
                 });
             }
 
+            function preExit(e) {
+                //e.preventDefault();
+                event.returnValue = "You're about to move on...";
+                console.log('old percaysoLocations');
+                console.log(percaysoLocations);
+                percaysoMetaData.locations = _.uniq(percaysoLocations);
+                percaysoMetaData.date_visited = Date.now();
+                console.log('percaysoMetaData');
+                console.log(percaysoMetaData);
+                localStorage.setItem('percaysoMetaData', JSON.stringify(percaysoMetaData));
+                return console.log(`successfully set percaysoMetaData: ${localStorage.getItem('percaysoMetaData')}`)
+            }
+
             if ("onhashchange" in window) {
                 console.log("The browser supports the hashchange event!");
                 window.addEventListener("hashchange", detectMouseEnter, false);
             }
-            detectMouseEnter()
+            window.addEventListener("beforeunload", preExit, false);
+            detectMouseEnter();
         });
-        /*function getTriggers() {
-            const $triggers = document.getElementsByClassName('trigger');
-            console.log('$triggers...');
-            return console.log($triggers);
-        }
-
-        function getTriggersH2() {
-            const $triggers = document.getElementsByClassName('trigger');
-            return Array.from($triggers).forEach(element => {
-                const H_2 = element.getElementByClassName('h2');
-                return console.log(`element ${element}: h2 ${H_2}`);
-            });
-        }
-
-        window.addEventListener("load", getTriggersH2);
-
-        if ("onhashchange" in window) {
-            console.log("The browser supports the hashchange event!");
-            window.addEventListener("hashchange", getTriggers, false);
-        }*/
     </script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
