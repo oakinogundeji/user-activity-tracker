@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>User Activity Tracker | Telios WebDev</title>
+    <!--Normalize-->
+    <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css"/>
+    <!--Bootstrap CSS-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!--Font Awesome-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!--Vue.js-->
+    <script src="https://unpkg.com/vue"></script>
+    <style>
+        #loading-spinner {
+            margin-top: 40px;
+            text-align: center;
+        }
+    </style>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+</head>
+<body>
+    <main id="app" class="container">
+        <div class="row" v-show="loadingSpinner" id="loading-spinner">
+            <span><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></span>
+        </div>
+        <div class="row">
+            <h2>Welcome...</h2>
+            <p>You visited the brochure page on: {{dateVisited}} and spent a total of {{totalTime}} milliseconds</p>
+            <p>You visited the following places...</p>
+            <p v-for="visit in visitInfo">
+                location: '{{visit.location}}' - time spent in milliseconds: {{visit.time_spent}}.
+            </p>
+        </div>
+    </main>
+    <script>
+        'use strict';
+        const VM = new Vue({
+            el: '#app',
+            data: {
+                loadingSpinner: true,
+                dateVisited: '',
+                visitInfo: [],
+                totalTime: ''
+            },
+            beforeMount: function () {
+                const percaysoMetaData = localStorage.getItem('percaysoMetaData');
+                if(percaysoMetaData) {
+                    this.loadingSpinner = false;
+                    const userDataArray = JSON.parse(percaysoMetaData).locations;
+                    let totalTime = 0;
+                    console.log('userDataArray');
+                    console.log(userDataArray);
+                    this.dateVisited = new Date(JSON.parse(percaysoMetaData).date_visited);
+                    userDataArray.forEach(location => {
+                        const timeSpent = Number(localStorage.getItem(location));
+                        totalTime += timeSpent;
+                        return this.visitInfo.push({location: location, time_spent: timeSpent});
+                    });
+                    this.totalTime = totalTime;
+                }
+            },
+            mounted: function () {
+                const VM = this;
+                this.$nextTick(() => {
+                    const
+                        percaysoMetaData = localStorage.getItem('percaysoMetaData'),
+                        userDataArray = JSON.parse(percaysoMetaData).locations;
+                    userDataArray.forEach(location => {
+                        return localStorage.removeItem(location);
+                    });
+                    localStorage.removeItem('percaysoMetaData');
+                });
+            }
+        });
+    </script>
+</body>

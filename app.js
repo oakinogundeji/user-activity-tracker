@@ -38,6 +38,7 @@ app.use(express.static(path.join(__dirname, 'static')));
  */
 //=============================================================================
 app.get('/test', (req, res) => res.status(200).json('OK!'));
+
 app.get('/', (req, res) => {
     const options = {
         root: __dirname,
@@ -49,6 +50,21 @@ app.get('/', (req, res) => {
             return res.status(500).json({error: err});
         } else {
             return console.log('Index.html sent');
+        }
+    });
+});
+
+app.get('/register', (req, res) => {
+    const options = {
+        root: __dirname,
+        dotfiles: 'deny'
+    };
+    return res.sendFile('register.html', options, err => {
+        if(err) {
+            console.error(`Couldn't send register.html`);
+            return res.status(500).json({error: err});
+        } else {
+            return console.log('register.html sent');
         }
     });
 });
