@@ -97,6 +97,8 @@
                         $H2 = elem.children('h2');
                     endElapsedTime = Date.now();
                     console.log(`endElapsedTime: ${endElapsedTime}`);
+                    mouseMovesCounter = 0;
+                    console.log(`successfully cleared mouseMovesCounter, value is ${mouseMovesCounter}`);
                     $H2.each(function (idx) {
                         const
                             elem = $(this),
