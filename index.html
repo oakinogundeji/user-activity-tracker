@@ -32,14 +32,43 @@
                 const $triggers = $('.trigger');
                 let
                     time_lapse,
-                    start,
-                    end,
-                    location;
+                    startElapsedTime,
+                    endElapsedTime,
+                    location,
+                    mouseMovesCounter = 0,
+                    decrementMouseMovesIntervalTimer;
+
+                function incrementCounter() {
+                    ++mouseMovesCounter;
+                    console.log('incremented mouse counter');
+                    return console.log(`new value of mouse moves counter: ${mouseMovesCounter}`);
+                }
+
+                // decrement mouseMovesCounter by 1 every 60 seconds and reset the
+                // 'startElapsedTime' timer when mouseMovesCounter is 0
+
+                function decrementMouseMovesInterval() {
+                    decrementMouseMovesIntervalTimer = setInterval(() => {
+                        if(mouseMovesCounter > 0) {
+                            --mouseMovesCounter;
+                            console.log('decremented mouse interval timer');
+                            return console.log(`new value of mouse moves counter: ${mouseMovesCounter}`);
+                        } else {
+                            console.log(`previous val of startElapsedTime: ${startElapsedTime}`);
+                            console.log('value of mouseMovesCounter is 0, resetting the startElapsedTime time');
+                            startElapsedTime = Date.now();
+                            return console.log(`new value of startElapsedTime: ${startElapsedTime}`);
+                        }
+                    }, 60000);
+                }
+
                 $triggers.on('mouseenter', function () {
+                    decrementMouseMovesInterval();
                     const
                         elem = $(this),
                         $H2 = elem.children('h2');
-                    start = Date.now();
+                    startElapsedTime = Date.now();
+                    console.log(`initial startElapsedTime: ${startElapsedTime}`);
                     location = window.location.href;
                     $H2.each(function (idx) {
                         const
@@ -49,16 +78,30 @@
                         return console.log(`Entering - Section: ${sectionHeading} @ Location: ${location}`);
                     });
                 });
+                // increment mouseMovesCounter once per set of mouse moves
+                // every 3 seconds
+                $triggers.on('mousemove', _.debounce(incrementCounter, 3000, {leading: true}));
+                //$triggers.on('mousemove', _.debounce(incrementCounter, 3000, {trailing: true}));
+                //$triggers.on('mousemove', _.throttle(incrementCounter, 3000, {leading: true}));
+                //$triggers.on('mousemove', _.throttle(incrementCounter, 3000, {trailing: true}));
+
+                //increment mouseMovesCounter once per set of mouse scrolls
+                //every 3 seconds
+                $triggers.on('scroll', _.debounce(incrementCounter, 3000, {leading: true}));
+                //$triggers.on('scroll', _.debounce(incrementCounter, 3000, {trailing: true}));
+
                 $triggers.on('mouseleave', function () {
+                    clearInterval(decrementMouseMovesIntervalTimer);
                     const
                         elem = $(this),
                         $H2 = elem.children('h2');
-                    end = Date.now();
+                    endElapsedTime = Date.now();
+                    console.log(`endElapsedTime: ${endElapsedTime}`);
                     $H2.each(function (idx) {
                         const
                             elem = $(this),
                             sectionHeading = elem.text();
-                        time_lapse = end - start;
+                        time_lapse = endElapsedTime - startElapsedTime;
                         console.log(`Leaving - Section: ${sectionHeading} @ Location: ${location}, you spent: ${time_lapse} millisecs`);
 
                         console.log(`trying to retrieve data: ${localStorage.getItem(sectionHeading)}`);
@@ -99,6 +142,11 @@
                 window.addEventListener("hashchange", detectMouseEnter, false);
             }
             window.addEventListener("beforeunload", preExit, false);
+            // prevent right click on 'register' link
+            $('#register').on("contextmenu", function (e) {
+                alert('Context menu disabled, please left click. Thank you.');
+                return false;
+            });
             detectMouseEnter();
         });
     </script>
@@ -107,7 +155,7 @@
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <![endElapsedTimeif]-->
   </head>
 </head>
 <body>
