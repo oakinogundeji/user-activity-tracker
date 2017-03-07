@@ -128,7 +128,7 @@
 
             function preExit(e) {
                 //e.preventDefault();
-                event.returnValue = "You're about to move on...";
+                e.returnValue = "You're about to move on...";
                 console.log('old percaysoLocations');
                 console.log(percaysoLocations);
                 percaysoMetaData.locations = _.uniq(percaysoLocations);
