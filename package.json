@@ -9,8 +9,8 @@
   "scripts": {
     "test": "mocha test",
     "start-dev": "nodemon app.js",
-    "start": "node app.js",
-    "dev-build": "watchify -t partialify ./static/js/app.js -o ./static/js/main.js -dv",
+    "start": "NODE_ENV=production node app.js",
+    "build-dev": "watchify -t partialify ./static/js/app.js -o ./static/js/main.js -dv",
     "build": "browserify -t partialify ./static/js/app.js -o ./static/js/main.js"
   },
   "repository": {
