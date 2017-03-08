@@ -21,136 +21,31 @@
     <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
     <!--custom elem detection script-->
     <script>
-        $(function () {
-            'use strict';
+        (
+            function () {
+                'use strict';
 
-            let
-                percaysoLocations = [],
-                percaysoMetaData = {};
-
-            function detectMouseEnter() {
-                const $triggers = $('.trigger');
-                let
-                    time_lapse,
-                    startElapsedTime,
-                    endElapsedTime,
-                    location,
-                    mouseMovesCounter = 0,
-                    decrementMouseMovesIntervalTimer;
-
-                function incrementCounter() {
-                    ++mouseMovesCounter;
-                    console.log('incremented mouse counter');
-                    return console.log(`new value of mouse moves counter: ${mouseMovesCounter}`);
+                if (!window.jQuery) {
+                  let jq = document.createElement('script');
+                  jq.type = 'text/javascript';
+                  jq.src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js";
+                  document.getElementsByTagName('head')[0].appendChild(jq);
                 }
 
-                // decrement mouseMovesCounter by 1 every 60 seconds and reset the
-                // 'startElapsedTime' timer when mouseMovesCounter is 0
-
-                function decrementMouseMovesInterval() {
-                    decrementMouseMovesIntervalTimer = setInterval(() => {
-                        if(mouseMovesCounter > 0) {
-                            --mouseMovesCounter;
-                            console.log('decremented mouse interval timer');
-                            return console.log(`new value of mouse moves counter: ${mouseMovesCounter}`);
-                        } else {
-                            console.log(`previous val of startElapsedTime: ${startElapsedTime}`);
-                            console.log('value of mouseMovesCounter is 0, resetting the startElapsedTime time');
-                            startElapsedTime = Date.now();
-                            return console.log(`new value of startElapsedTime: ${startElapsedTime}`);
-                        }
-                    }, 60000);
+                if(!((typeof(window._) == 'function') && (Number(window._.VERSION.split('.')[0]) >= 4))) {
+                    let _ = document.createElement('script');
+                    _.type = 'text/javascript';
+                    _.src = "https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js";
+                    document.getElementsByTagName('head')[0].appendChild(_);
                 }
 
-                $triggers.on('mouseenter', function () {
-                    decrementMouseMovesInterval();
-                    const
-                        elem = $(this),
-                        $H2 = elem.children('h2');
-                    startElapsedTime = Date.now();
-                    console.log(`initial startElapsedTime: ${startElapsedTime}`);
-                    location = window.location.href;
-                    $H2.each(function (idx) {
-                        const
-                            elem = $(this),
-                            sectionHeading = elem.text();
-                        percaysoLocations.push(sectionHeading);
-                        return console.log(`Entering - Section: ${sectionHeading} @ Location: ${location}`);
-                    });
-                });
-                // increment mouseMovesCounter once per set of mouse moves
-                // every 3 seconds
-                $triggers.on('mousemove', _.debounce(incrementCounter, 3000, {leading: true}));
-                //$triggers.on('mousemove', _.debounce(incrementCounter, 3000, {trailing: true}));
-                //$triggers.on('mousemove', _.throttle(incrementCounter, 3000, {leading: true}));
-                //$triggers.on('mousemove', _.throttle(incrementCounter, 3000, {trailing: true}));
+                let UAT = document.createElement('script');
+                UAT.type = 'text/javascript';
+                UAT.src = "https://s3-eu-west-1.amazonaws.com/percayso-uat-script-test/uat.js";
+                document.getElementsByTagName('head')[0].appendChild(UAT);
 
-                //increment mouseMovesCounter once per set of mouse scrolls
-                //every 3 seconds
-                $triggers.on('scroll', _.debounce(incrementCounter, 3000, {leading: true}));
-                //$triggers.on('scroll', _.debounce(incrementCounter, 3000, {trailing: true}));
-
-                $triggers.on('mouseleave', function () {
-                    clearInterval(decrementMouseMovesIntervalTimer);
-                    const
-                        elem = $(this),
-                        $H2 = elem.children('h2');
-                    endElapsedTime = Date.now();
-                    console.log(`endElapsedTime: ${endElapsedTime}`);
-                    mouseMovesCounter = 0;
-                    console.log(`successfully cleared mouseMovesCounter, value is ${mouseMovesCounter}`);
-                    $H2.each(function (idx) {
-                        const
-                            elem = $(this),
-                            sectionHeading = elem.text();
-                        time_lapse = endElapsedTime - startElapsedTime;
-                        console.log(`Leaving - Section: ${sectionHeading} @ Location: ${location}, you spent: ${time_lapse} millisecs`);
-
-                        console.log(`trying to retrieve data: ${localStorage.getItem(sectionHeading)}`);
-                        const previousData = localStorage.getItem(sectionHeading);
-                        if(time_lapse > 4999) {
-                            if(previousData) {
-                                const
-                                    numericPreviousData = Number(previousData),
-                                    newData = numericPreviousData + time_lapse;
-                                console.log(`numericPreviousData: ${numericPreviousData}`);
-                                console.log(`newData: ${newData}`);
-                                localStorage.setItem(sectionHeading, newData);
-                                return console.log(`successfully updated data: ${localStorage.getItem(sectionHeading)}`);
-                            } else {
-                                localStorage.setItem(sectionHeading, time_lapse);
-                                return console.log(`successfully saved fresh data: ${localStorage.getItem(sectionHeading)}`);
-                            }
-                        }
-                    });
-                });
             }
-
-            function preExit(e) {
-                //e.preventDefault();
-                e.returnValue = "You're about to move on...";
-                console.log('old percaysoLocations');
-                console.log(percaysoLocations);
-                percaysoMetaData.locations = _.uniq(percaysoLocations);
-                percaysoMetaData.date_visited = Date.now();
-                console.log('percaysoMetaData');
-                console.log(percaysoMetaData);
-                localStorage.setItem('percaysoMetaData', JSON.stringify(percaysoMetaData));
-                return console.log(`successfully set percaysoMetaData: ${localStorage.getItem('percaysoMetaData')}`)
-            }
-
-            if ("onhashchange" in window) {
-                console.log("The browser supports the hashchange event!");
-                window.addEventListener("hashchange", detectMouseEnter, false);
-            }
-            window.addEventListener("beforeunload", preExit, false);
-            // prevent right click on 'register' link
-            $('#register').on("contextmenu", function (e) {
-                alert('Context menu disabled, please left click. Thank you.');
-                return false;
-            });
-            detectMouseEnter();
-        });
+        )();
     </script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
